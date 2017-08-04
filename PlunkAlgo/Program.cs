@@ -59,26 +59,16 @@ namespace PlunkAlgo {
             var leftArrValue = new ArrValue(arrMin);
 
             for (int i = 0; i < arr.Length; i++) {
-                leftSum = leftSum + arr[i];
-                if (leftSum > leftArrValue.sum) {
-                    leftArrValue.sum = leftSum;
-                    leftArrValue.index = i;
-                    leftArrValue.ClearChildren();
-                }
+                leftArrValue.Update(arrMin, arr[i], i);
 
                 var rCurrIndex = arr.Length - 1 - i;
-                rigthSum = rigthSum + arr[rCurrIndex];
-                if (rigthSum > rightArrValue.sum) {
-                    rightArrValue.sum = rigthSum;
-                    rightArrValue.index = rCurrIndex;
-                    rightArrValue.ClearChildren();
-                }
+                rightArrValue.Update(arrMin, arr[rCurrIndex], rCurrIndex);
             }
-      
+
             var sum = 0;
 
             if (rightArrValue.index > leftArrValue.index) {
-                sum= Math.Max(rightArrValue.sum, leftArrValue.sum);
+                sum = Math.Max(rightArrValue.maxSum, leftArrValue.maxSum);
             }
             else {
                 var newArrLength = leftArrValue.index - rightArrValue.index + 1;
@@ -98,14 +88,46 @@ namespace PlunkAlgo {
 
     public class ArrValue {
         public ArrValue(int minValue) {
-            sum = minValue;
+            maxSum = minValue;
         }
         public int index;
-        public int sum;
+        public int maxSum;
+        public int currSum;
         public ArrValue child;
         public void ClearChildren() {
             child = null;
 
+        }
+
+        public void Update(int arrMin, int arrValue, int arrIndex) {
+            currSum = currSum + arrValue;
+            if (currSum >= maxSum) {
+                maxSum = currSum;
+                index = arrIndex;
+                child = null;
+            }
+            else {
+                if (child == null)
+                    child = new ArrValue(arrMin);
+                child.Update(arrMin, arrValue, arrIndex);
+
+            }
+        }
+        public void UpdateChild(int arrMin, int arrValue, int arrIndex) {
+            if (child == null) {
+                child = new ArrValue(arrMin);
+            }
+            else {
+                child.currSum = child.currSum + arrValue;
+                if (child.currSum > child.maxSum) {
+                    child.maxSum = child.currSum;
+                    child.index = arrIndex;
+                    child.ClearChildren();
+                }
+                else {
+                    child.UpdateChild(arrMin, arrValue, arrIndex);
+                }
+            }
         }
     }
 }

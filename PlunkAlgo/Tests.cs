@@ -86,7 +86,7 @@ namespace PlunkAlgo {
         [Test]
         public void Test11() {
             //arrange
-            var res = p.getMaxSubSum(new int[] { 10, 20, -200, 100, 200, -300, 5, 35 });
+            var res = p.getMaxSubSum(new int[] { 10, 20, -200, 40, 5, -300, 5, 35 });
             //assert
             Assert.AreEqual(300, res);
         }
