@@ -65,25 +65,50 @@ namespace PlunkAlgo {
                 rightArrValue.Update(arrMin, arr[rCurrIndex], rCurrIndex);
             }
 
-            var sum = 0;
+            var allLeftIndexes = new List<int>();
+            leftArrValue.GetAllIndexes(allLeftIndexes);
+            var allRightIndexes = new List<int>();
+            rightArrValue.GetAllIndexes(allRightIndexes);
 
-            if (rightArrValue.index > leftArrValue.index) {
-                sum = Math.Max(rightArrValue.maxSum, leftArrValue.maxSum);
-            }
-            else {
-                var newArrLength = leftArrValue.index - rightArrValue.index + 1;
-                var newArr = new int[newArrLength];
-                Array.Copy(arr, rightArrValue.index, newArr, 0, newArrLength);
-                sum = newArr.Sum();
+            var indexesLenght = allRightIndexes.Count;
 
+            var allArraysValues = new List<int>();
+
+
+            for (int k = 0; k < indexesLenght; k++) {
+                var rArrIndex = allRightIndexes[k];
+                var lArrIndex = allLeftIndexes[indexesLenght - 1 - k];
+                var subArrLength = lArrIndex - rArrIndex + 1;
+                var subArr = SubArray<int>(arr, rArrIndex, subArrLength);
+                var subArrSum = subArr.Sum();
+                allArraysValues.Add(subArrSum);
             }
+
+
+
+            var sum = allArraysValues.Max();
+
+            //if (rightArrValue.index > leftArrValue.index) {
+            //    sum = Math.Max(rightArrValue.maxSum, leftArrValue.maxSum);
+            //}
+            //else {
+            //    var newArrLength = leftArrValue.index - rightArrValue.index + 1;
+            //    var newArr = new int[newArrLength];
+            //    Array.Copy(arr, rightArrValue.index, newArr, 0, newArrLength);
+            //    sum = newArr.Sum();
+
+            //}
 
             if (sum > 0)
                 return sum;
             else
                 return 0;
         }
-
+        public T[] SubArray<T>(T[] data, int index, int length) {
+            T[] result = new T[length];
+            Array.Copy(data, index, result, 0, length);
+            return result;
+        }
     }
 
     public class ArrValue {
@@ -93,6 +118,7 @@ namespace PlunkAlgo {
         public int index;
         public int maxSum;
         public int currSum;
+        bool isInGame;
         public ArrValue child;
         public void ClearChildren() {
             child = null;
@@ -101,6 +127,8 @@ namespace PlunkAlgo {
 
         public void Update(int arrMin, int arrValue, int arrIndex) {
             currSum = currSum + arrValue;
+            if (arrValue > 0)
+                isInGame = true;
             if (currSum >= maxSum) {
                 maxSum = currSum;
                 index = arrIndex;
@@ -128,6 +156,16 @@ namespace PlunkAlgo {
                     child.UpdateChild(arrMin, arrValue, arrIndex);
                 }
             }
+        }
+        public List<int> GetAllIndexes(List<int> lst) {
+            if (isInGame) {
+
+            }
+            lst.Add(index);
+            if (child != null)
+                return child.GetAllIndexes(lst);
+            else
+                return lst;
         }
     }
 }
