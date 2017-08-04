@@ -23,7 +23,7 @@ namespace PlunkAlgo {
 
         }
 
-        public int getMaxSubSum(int[] arr) {
+        public int getMaxSubSum2(int[] arr) {
             var max = 0;
             for (int i = 0; i < arr.Length; i++) {
                 var currMax = 0;
@@ -41,9 +41,39 @@ namespace PlunkAlgo {
             return max;
         }
 
-        public int getMaxSubSum2(int[] arr) {
-            // var arrMin = Math.Min(arr);
-            return 0;
+        public int getMaxSubSum(int[] arr) {
+            
+            var arrMin = arr.Min();
+
+            var leftIndex = 0;
+            var rightIndex = arr.Length - 1;
+
+            var leftMax = arrMin;
+            var rightMax = arrMin;
+
+            var leftSum = 0;
+            var rigthSum = 0;
+
+            for (int i = 0; i < arr.Length; i++) {
+                leftSum = leftSum + arr[i];
+                if (leftSum > leftMax) {
+                    leftMax = leftSum;
+                    leftIndex = i;
+                }
+
+                var rCurrIndex = arr.Length - 1 - i;
+                rigthSum = rigthSum + arr[rCurrIndex];
+                if (rigthSum > rightMax) {
+                    rightMax = rigthSum;
+                    rightIndex = rCurrIndex;
+                }
+            }
+            var newArrLength = leftIndex - rightIndex + 1;
+            var newArr = new int[newArrLength];
+            Array.Copy(arr, rightIndex, newArr, 0, newArrLength);
+            var sum = 0;
+
+            return newArr.Sum();
         }
         
     }
