@@ -55,30 +55,35 @@ namespace PlunkAlgo {
             var leftSum = 0;
             var rigthSum = 0;
 
+            var rightArrValue = new ArrValue(arrMin);
+            var leftArrValue = new ArrValue(arrMin);
+
             for (int i = 0; i < arr.Length; i++) {
                 leftSum = leftSum + arr[i];
-                if (leftSum > leftMax) {
-                    leftMax = leftSum;
-                    leftIndex = i;
+                if (leftSum > leftArrValue.sum) {
+                    leftArrValue.sum = leftSum;
+                    leftArrValue.index = i;
+                    leftArrValue.ClearChildren();
                 }
 
                 var rCurrIndex = arr.Length - 1 - i;
                 rigthSum = rigthSum + arr[rCurrIndex];
-                if (rigthSum > rightMax) {
-                    rightMax = rigthSum;
-                    rightIndex = rCurrIndex;
+                if (rigthSum > rightArrValue.sum) {
+                    rightArrValue.sum = rigthSum;
+                    rightArrValue.index = rCurrIndex;
+                    rightArrValue.ClearChildren();
                 }
             }
       
             var sum = 0;
 
-            if (rightIndex > leftIndex) {
-                sum= Math.Max(rightMax, leftMax);
+            if (rightArrValue.index > leftArrValue.index) {
+                sum= Math.Max(rightArrValue.sum, leftArrValue.sum);
             }
             else {
-                var newArrLength = leftIndex - rightIndex + 1;
+                var newArrLength = leftArrValue.index - rightArrValue.index + 1;
                 var newArr = new int[newArrLength];
-                Array.Copy(arr, rightIndex, newArr, 0, newArrLength);
+                Array.Copy(arr, rightArrValue.index, newArr, 0, newArrLength);
                 sum = newArr.Sum();
 
             }
@@ -89,5 +94,18 @@ namespace PlunkAlgo {
                 return 0;
         }
 
+    }
+
+    public class ArrValue {
+        public ArrValue(int minValue) {
+            sum = minValue;
+        }
+        public int index;
+        public int sum;
+        public ArrValue child;
+        public void ClearChildren() {
+            child = null;
+
+        }
     }
 }
