@@ -7,6 +7,20 @@ using System.Threading.Tasks;
 namespace PlunkAlgo {
   public  class Program {
         static void Main(string[] args) {
+            var k = 100000;
+            var arr = new int[k];
+            var rand = new Random();
+            for (int i = 0; i < k; i++) {
+                arr[i] = rand.Next(-50, 50);
+            }
+            DateTime d1 = DateTime.Now;
+            var p = new Program();
+            var res = p.getMaxSubSum(arr);
+            DateTime d2 = DateTime.Now;
+            var ts = d2 - d1;
+            Console.WriteLine(res + "  - " +ts);
+            Console.ReadKey();
+
         }
 
         public int getMaxSubSum(int[] arr) {
@@ -26,5 +40,11 @@ namespace PlunkAlgo {
             }
             return max;
         }
+
+        public int getMaxSubSum2(int[] arr) {
+            // var arrMin = Math.Min(arr);
+            return 0;
+        }
+        
     }
 }
