@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace PlunkAlgo {
-  public  class Program {
+    public class Program {
         static void Main(string[] args) {
             var k = 100000;
             var arr = new int[k];
@@ -18,7 +18,7 @@ namespace PlunkAlgo {
             var res = p.getMaxSubSum(arr);
             DateTime d2 = DateTime.Now;
             var ts = d2 - d1;
-            Console.WriteLine(res + "  - " +ts);
+            Console.WriteLine(res + "  - " + ts);
             Console.ReadKey();
 
         }
@@ -42,7 +42,8 @@ namespace PlunkAlgo {
         }
 
         public int getMaxSubSum(int[] arr) {
-            
+            if (arr.Length == 0)
+                return 0;
             var arrMin = arr.Min();
 
             var leftIndex = 0;
@@ -68,13 +69,25 @@ namespace PlunkAlgo {
                     rightIndex = rCurrIndex;
                 }
             }
-            var newArrLength = leftIndex - rightIndex + 1;
-            var newArr = new int[newArrLength];
-            Array.Copy(arr, rightIndex, newArr, 0, newArrLength);
+      
             var sum = 0;
 
-            return newArr.Sum();
+            if (rightIndex > leftIndex) {
+                sum= Math.Max(rightMax, leftMax);
+            }
+            else {
+                var newArrLength = leftIndex - rightIndex + 1;
+                var newArr = new int[newArrLength];
+                Array.Copy(arr, rightIndex, newArr, 0, newArrLength);
+                sum = newArr.Sum();
+
+            }
+
+            if (sum > 0)
+                return sum;
+            else
+                return 0;
         }
-        
+
     }
 }
