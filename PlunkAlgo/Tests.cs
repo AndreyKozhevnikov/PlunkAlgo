@@ -41,6 +41,14 @@ namespace PlunkAlgo {
             //assert
             Assert.AreEqual(14, res);
         }
+
+        [Test]
+        public void Test333() {
+            //arrange
+            var res = p.getMaxSubSum(new int[] { -1, 2, 3, -10, 11 });
+            //assert
+            Assert.AreEqual(11, res);
+        }
         [Test]
         public void Test4() {
             //arrange
@@ -96,6 +104,24 @@ namespace PlunkAlgo {
             var res = p.getMaxSubSum(new int[] { 10, 20, -200, 40, 5, -300, 5, 35 });
             //assert
             Assert.AreEqual(45, res);
+        }
+
+        [Test]
+        public void ComplexTest() {
+            //arrange
+            var rand = new Random(DateTime.Now.Millisecond);
+            var arr = new int[100];
+            int resEtal = 0;
+            int res = 0;
+            //act-assert
+            for (int i = 0; i < 100; i++) {
+                for (int j = 0; j < 100; j++) {
+                    arr[j] = rand.Next(-500, 500);
+                }
+                resEtal = p.getMaxSubSumEtal(arr);
+                res = p.getMaxSubSum(arr);
+                Assert.AreEqual(resEtal, res,arr.ToString());
+            }
         }
     }
 }

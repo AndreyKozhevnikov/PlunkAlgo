@@ -23,7 +23,7 @@ namespace PlunkAlgo {
 
         }
 
-        public int getMaxSubSum2(int[] arr) {
+        public int getMaxSubSumEtal(int[] arr) {
             var max = 0;
             for (int i = 0; i < arr.Length; i++) {
                 var currMax = 0;
@@ -42,67 +42,44 @@ namespace PlunkAlgo {
         }
 
         public int getMaxSubSum(int[] arr) {
+            int maxSum = 0;
+            int partialSum = 0;
+            for (int i = 0; i < arr.Length; i++) {
+                partialSum = partialSum + arr[i];
+                maxSum = Math.Max(partialSum, maxSum);
+                if (partialSum < 0)
+                    partialSum = 0;
+            }
+            return maxSum;
+        }
+
+        public int getMaxSubSumLong(int[] arr) {
             if (arr.Length == 0)
                 return 0;
             var arrMin = arr.Min();
 
-            var leftIndex = 0;
-            var rightIndex = arr.Length - 1;
-
-            var leftMax = arrMin;
-            var rightMax = arrMin;
-
-            var leftSum = 0;
-            var rigthSum = 0;
-
-            var rightArrValue = new ArrValue(arrMin);
-            var leftArrValue = new ArrValue(arrMin);
+            ArrValue leftArrValue = null;
 
             for (int i = 0; i < arr.Length; i++) {
-                leftArrValue.Update(arrMin, arr[i], i);
-
-                var rCurrIndex = arr.Length - 1 - i;
-                rightArrValue.Update(arrMin, arr[rCurrIndex], rCurrIndex);
+                if (leftArrValue == null) {
+                    if (arr[i] > 0) {
+                        leftArrValue = new ArrValue(arrMin, arr[i], i);
+                    }
+                }
+                else {
+                    leftArrValue.Update(arrMin, arr[i], i);
+                }
             }
 
-            var allLeftIndexes = new List<int>();
-            leftArrValue.GetAllIndexes(allLeftIndexes);
-            var allRightIndexes = new List<int>();
-            rightArrValue.GetAllIndexes(allRightIndexes);
-
-            var indexesLenght = allRightIndexes.Count;
-
-            var allArraysValues = new List<int>();
-
-
-            for (int k = 0; k < indexesLenght; k++) {
-                var rArrIndex = allRightIndexes[k];
-                var lArrIndex = allLeftIndexes[indexesLenght - 1 - k];
-                var subArrLength = lArrIndex - rArrIndex + 1;
-                var subArr = SubArray<int>(arr, rArrIndex, subArrLength);
-                var subArrSum = subArr.Sum();
-                allArraysValues.Add(subArrSum);
-            }
-
-
-
-            var sum = allArraysValues.Max();
-
-            //if (rightArrValue.index > leftArrValue.index) {
-            //    sum = Math.Max(rightArrValue.maxSum, leftArrValue.maxSum);
-            //}
-            //else {
-            //    var newArrLength = leftArrValue.index - rightArrValue.index + 1;
-            //    var newArr = new int[newArrLength];
-            //    Array.Copy(arr, rightArrValue.index, newArr, 0, newArrLength);
-            //    sum = newArr.Sum();
-
-            //}
-
-            if (sum > 0)
-                return sum;
-            else
+            int sum = 0;
+            if (leftArrValue == null)
                 return 0;
+            leftArrValue.SetMax(ref sum);
+
+
+
+            return sum;
+
         }
         public T[] SubArray<T>(T[] data, int index, int length) {
             T[] result = new T[length];
@@ -114,63 +91,46 @@ namespace PlunkAlgo {
     public class ArrValue {
         public ArrValue(int minValue) {
             maxSum = minValue;
+
         }
-        public int index;
+
         public int maxSum;
         public int currSum;
-        bool isInGame;
+
         public ArrValue child;
-        public void ClearChildren() {
-            child = null;
 
+        public ArrValue(int arrMin, int arrValue, int arrIndex) {
+            maxSum = arrValue;
+            currSum = arrValue;
         }
-
+        bool isReadyForChild = false;
+        List<int> interMediateMax = new List<int>();
         public void Update(int arrMin, int arrValue, int arrIndex) {
             currSum = currSum + arrValue;
-            if (arrValue > 0)
-                isInGame = true;
-            if (currSum >= maxSum) {
-                maxSum = currSum;
-                index = arrIndex;
-               // child = null;
-            }
-            else {
-                //if (child == null&&arrValue>0)
-                if (child == null )
-                    child = new ArrValue(arrMin);
-               // if (child!=null)
+            if (child != null)
                 child.Update(arrMin, arrValue, arrIndex);
-
-            }
-        }
-        public void UpdateChild(int arrMin, int arrValue, int arrIndex) {
-            if (child == null) {
-                child = new ArrValue(arrMin);
+            if (arrValue > 0) {
+                if (currSum >= maxSum) {
+                    maxSum = currSum;
+                }
+                if (child == null && isReadyForChild) {
+                    child = new ArrValue(arrMin, arrValue, arrIndex);
+                    isReadyForChild = false;
+                }
             }
             else {
-                child.currSum = child.currSum + arrValue;
-                if (child.currSum > child.maxSum) {
-                    child.maxSum = child.currSum;
-                    child.index = arrIndex;
-                    child.ClearChildren();
-                }
-                else {
-                    child.UpdateChild(arrMin, arrValue, arrIndex);
-                }
+                interMediateMax.Add(currSum - arrValue);
+                isReadyForChild = true;
             }
         }
-        public List<int> GetAllIndexes(List<int> lst) {
-            if (isInGame) {
-                lst.Add(index);
-                if (child != null)
-                    return child.GetAllIndexes(lst);
-            }
-            return lst;
-            //lst.Add(index);
-            //if (child != null)
-            //    return child.GetAllIndexes(lst);
-            //else
-            //    return lst;
+
+        public void SetMax(ref int currMax) {
+            interMediateMax.Add(maxSum);
+            var interMax = interMediateMax.Max();
+            currMax = Math.Max(interMax, currMax);
+            if (child != null)
+                child.SetMax(ref currMax);
+
         }
     }
 }
