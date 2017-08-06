@@ -35,6 +35,13 @@ namespace PlunkAlgo {
             Assert.AreEqual(11, res);
         }
         [Test]
+        public void Test33() {
+            //arrange
+            var res = p.getMaxSubSum(new int[] { -1, 2, 3, -2, 11 });
+            //assert
+            Assert.AreEqual(14, res);
+        }
+        [Test]
         public void Test4() {
             //arrange
             var res = p.getMaxSubSum(new int[] { -2, -1, 1, 2 });

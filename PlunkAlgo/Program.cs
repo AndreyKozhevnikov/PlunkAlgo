@@ -132,11 +132,13 @@ namespace PlunkAlgo {
             if (currSum >= maxSum) {
                 maxSum = currSum;
                 index = arrIndex;
-                child = null;
+               // child = null;
             }
             else {
-                if (child == null)
+                //if (child == null&&arrValue>0)
+                if (child == null )
                     child = new ArrValue(arrMin);
+               // if (child!=null)
                 child.Update(arrMin, arrValue, arrIndex);
 
             }
@@ -159,13 +161,16 @@ namespace PlunkAlgo {
         }
         public List<int> GetAllIndexes(List<int> lst) {
             if (isInGame) {
-
+                lst.Add(index);
+                if (child != null)
+                    return child.GetAllIndexes(lst);
             }
-            lst.Add(index);
-            if (child != null)
-                return child.GetAllIndexes(lst);
-            else
-                return lst;
+            return lst;
+            //lst.Add(index);
+            //if (child != null)
+            //    return child.GetAllIndexes(lst);
+            //else
+            //    return lst;
         }
     }
 }
